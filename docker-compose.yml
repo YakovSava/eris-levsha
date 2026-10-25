@@ -9,6 +9,11 @@ services:
       - media_data:/srv/media:ro
     depends_on:
       - backend
+      - frontend
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
     restart: unless-stopped
 
   backend:

@@ -10,7 +10,7 @@ docker compose up --build
 Первый старт скачивает модель эмбеддингов (кэш в volume `models_cache`).
 
 ## Роутинг (nginx)
-`/admin`, `/api`, `/static`, `/media` → Django; остальное → фронтенд (пока заглушка).
+`/admin`, `/api`, `/static`, `/media` → Django; остальное → фронтенд (React SPA, контейнер `frontend`).
 
 ## API
 | Endpoint | Доступ |
