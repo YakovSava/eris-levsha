@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 DEBUG = os.environ.get("DJANGO_DEBUG", "0") == "1"
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
-CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+CSRF_TRUSTED_ORIGINS = [f"http://{x}" for x in ALLOWED_HOSTS]+[f"http://{x}" for x in ALLOWED_HOSTS]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
