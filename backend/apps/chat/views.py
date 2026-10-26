@@ -1,3 +1,4 @@
+import logging
 import re
 
 from rest_framework.permissions import AllowAny
@@ -11,6 +12,8 @@ from apps.knowledge.models import KnowledgeItem
 
 from .models import Chat, Message
 from .serializers import AskSerializer, ChatDetailSerializer, ChatSerializer
+
+log = logging.getLogger(__name__)
 
 MEDIA_INTENT = re.compile(r"фот|картин|изображ|photo|picture|image", re.I)
 YEAR = re.compile(r"\b(?:19|20)\d{2}\b")
@@ -51,8 +54,13 @@ class AskView(APIView):
             recent = chat.messages.order_by("-created_at")[:10]
             history = [{"role": m.role, "content": m.content} for m in reversed(list(recent))]
 
-        hits = services.search(text, n=5)
-        answer = services.llm_answer(text, [h["text"] for h in hits], history)
+        try:
+            hits = services.search(text, n=5)
+            answer = services.llm_answer(text, [h["text"] for h in hits], history)
+        except Exception:
+            log.exception("Ask failed (vector search or LLM call)")
+            return Response({"detail": "Сервис ИИ временно недоступен. Проверьте LLM_* в .env и логи backend."},
+                            status=502)
 
         if chat:
             Message.objects.create(chat=chat, role="user", content=text)

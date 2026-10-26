@@ -41,7 +41,7 @@ export default function Chat() {
       setMessages((m) => [...m, { role: "assistant", content: r.answer, attachments: r.attachments }]);
       if (r.chat_id && r.chat_id !== chatId) { setChatId(r.chat_id); loadChats(); }
     } catch (err) {
-      setError(err.status === 429 ? "Слишком много запросов, подождите минуту." : "Не удалось получить ответ.");
+      setError(err.status === 429 ? "Слишком много запросов, подождите минуту." : err.message || "Не удалось получить ответ.");
     } finally {
       setBusy(false);
     }
